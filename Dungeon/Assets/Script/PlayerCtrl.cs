@@ -36,25 +36,23 @@ public class PlayerCtrl : MonoBehaviour
         float _horizontal = Input.GetAxisRaw("Horizontal");
         float _vertical = Input.GetAxisRaw("Vertical");
         
-        //animation
-        if(_horizontal !=0 || _vertical != 0)
-        {
-            animator.SetBool("Walking", true);
-        }
-        else
+        if(_horizontal ==0 && _vertical == 0)
         {
             animator.SetBool("Walking", false);
+            return;
         }
-        
-        Vector3 _rotate = new Vector3(0f, _horizontal, 0f);
-        Vector3 _movement = transform.forward * _vertical;
 
-        _rotate = _rotate * rotationSpeed;
-        _movement = _movement.normalized * applySpeed;
+        animator.SetBool("Walking", true);
 
-        rigidbody.MovePosition(transform.position + _movement * Time.deltaTime);
-        rigidbody.MoveRotation(rigidbody.rotation * Quaternion.Euler(_rotate));
-        
+
+        Vector3 _movement = new Vector3(_horizontal, 0, _vertical);
+        Quaternion _rot = Quaternion.LookRotation(_movement);
+
+        _movement = _movement.normalized * applySpeed * Time.deltaTime;
+        _rot = Quaternion.Slerp(transform.rotation, _rot, rotationSpeed * Time.deltaTime);
+
+        rigidbody.MovePosition(transform.position + _movement);
+        rigidbody.MoveRotation(_rot);
 
     }
 }
