@@ -12,9 +12,11 @@ public class PlayerCtrl : MonoBehaviour
 
     [SerializeField]
     private float rotationSpeed;
-    
-    private Rigidbody rigidbody;
 
+    [SerializeField]
+    private bool isRun = false;
+
+    private Rigidbody rigidbody;
     private Animator animator;
     
     // Start is called before the first frame update
@@ -39,10 +41,21 @@ public class PlayerCtrl : MonoBehaviour
         if(_horizontal ==0 && _vertical == 0)
         {
             animator.SetBool("Walking", false);
+            animator.SetBool("Running", false);
             return;
         }
 
-        animator.SetBool("Walking", true);
+        // Run check
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            animator.SetBool("Running", true);
+            applySpeed = runSpeed;
+        }
+        else
+        {
+            animator.SetBool("Walking", true);
+            applySpeed = walkSpeed;
+        }
 
 
         Vector3 _movement = new Vector3(_horizontal, 0, _vertical);
